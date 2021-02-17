@@ -65,7 +65,7 @@ def margin_text(draw, x, y, text, font, shadowcolor):
 def add_stat(im, x, y, i, song_info, best_30):
     song_name_cut = song_info[best_30[i]['song_id']]['en']
     if len(song_name_cut) > 10:
-        song_name_cut = song_name_cut[0:11] + '..'
+        song_name_cut = song_name_cut[0:10] + '..'
     text = '#' + str(i + 1) + ' ' + song_name_cut + '[' + str(
         difficulty[best_30[i]['difficulty']]) + \
            ']\n\n\n PTT:' + str(best_30[i]['rating'])[0:5] + '    F:' + str(
@@ -167,17 +167,21 @@ async def on_message(message):
                     song_info = arraybuffer[0]
                     personal_info = arraybuffer[1]
                     recent_data = personal_info['recent_score'][0]
+                    try:
+                        song_name = song_info[recent_data['song_id']]['en']
+                    except KeyError:
+                        song_name = recent_data['song_id']
 
-                    if (personal_info['is_char_uncapped'] == True):
-                        avaurl = ava + str(personal_info['character']) + 'u_icon.png'
+                    if personal_info['is_char_uncapped']:
+                        ava_url = ava + str(personal_info['character']) + 'u_icon.png'
                     else:
-                        avaurl = ava + str(personal_info['character']) + '_icon.png'
+                        ava_url = ava + str(personal_info['character']) + '_icon.png'
 
                     rating = list(str(personal_info['rating']))
                     rating.insert(np.size(rating) - 2, '.')
-                    ratingstr = "".join(rating)
+                    rating_str = "".join(rating)
 
-                    responseembed = discord.Embed(title=song_info[recent_data['song_id']]['en']+ '[' + str(difficulty[recent_data['difficulty']]) + ']',
+                    response_embed = discord.Embed(title=song_name+ '[' + str(difficulty[recent_data['difficulty']]) + ']',
                                                   type='rich' ,
                                     description='**' + str(recent_data['score']) + '**(' + clear_type[recent_data['clear_type']] + ')\n**▸Pure: **' + \
                                     str(recent_data['perfect_count']) + '(+' + str(recent_data['shiny_perfect_count']) + ') **▸Far: **' + \
@@ -185,11 +189,11 @@ async def on_message(message):
                                     str(recent_data['constant']) + '->**' + str(recent_data['rating'])[0:6] +'**',
                                                   color= discord.Color.magenta())
 
-                    responseembed.set_thumbnail(url =cover + recent_data['song_id'] + '.jpg')
-                    responseembed.set_author(name= personal_info['name'] + ' [' +  ratingstr + ']', icon_url=avaurl)
-                    responseembed.set_footer(text= 'Played ' + checktime(recent_data['time_played']) + ' ago')
+                    response_embed.set_thumbnail(url =cover + recent_data['song_id'] + '.jpg')
+                    response_embed.set_author(name= personal_info['name'] + ' [' +  rating_str + ']', icon_url=ava_url)
+                    response_embed.set_footer(text= 'Played ' + checktime(recent_data['time_played']) + ' ago')
 
-                    await message.channel.send(content=message.author.mention ,embed= responseembed)
+                    await message.channel.send(content=message.author.mention, embed=response_embed)
                     return
             response = 'Please bind your ID first, use !bind <UID>'
             await message.channel.send(response)
@@ -215,23 +219,23 @@ async def on_message(message):
                     r10 = personal_info['rating'] * 0.01 * 4 - b30 * 3
 
                     if (personal_info['is_char_uncapped'] == True):
-                        avaurl = ava + str(personal_info['character']) + 'u_icon.png'
+                        ava_url = ava + str(personal_info['character']) + 'u_icon.png'
                     else:
-                        avaurl = ava + str(personal_info['character']) + '_icon.png'
+                        ava_url = ava + str(personal_info['character']) + '_icon.png'
 
                     rating = list(str(personal_info['rating']))
                     rating.insert(np.size(rating) - 2, '.')
-                    ratingstr = "".join(rating)
+                    rating_str = "".join(rating)
 
-                    responseembed = discord.Embed(title= 'Best 30',type='rich',color=discord.Color.magenta())
-                    responseembed.set_author(name=personal_info['name'] + ' [' + ratingstr + ']', icon_url=avaurl)
+                    response_embed = discord.Embed(title= 'Best 30',type='rich',color=discord.Color.magenta())
+                    response_embed.set_author(name=personal_info['name'] + ' [' + rating_str + ']', icon_url=ava_url)
 
                     for i in range(len(best_30)):
                         if i == 15:
-                            await message.channel.send(content=message.author.mention ,embed= responseembed)
-                            responseembed.clear_fields()
-                            responseembed.remove_author()
-                        responseembed.add_field(name='#'+ str(i+1) + ' ' + song_info[best_30[i]['song_id']]['en'] + '[' +
+                            await message.channel.send(content=message.author.mention ,embed= response_embed)
+                            response_embed.clear_fields()
+                            response_embed.remove_author()
+                        response_embed.add_field(name='#'+ str(i+1) + ' ' + song_info[best_30[i]['song_id']]['en'] + '[' +
                                                      str(difficulty[best_30[i]['difficulty']]) + ']',
                                 value='**' + str(best_30[i]['score']) + '** (' + clear_type[best_30[i]['clear_type']] + ')\n**▸Pure: **' + \
                                 str(best_30[i]['perfect_count']) + '(+' + str(best_30[i]['shiny_perfect_count']) + ')\n**▸Far: **' + \
@@ -239,8 +243,8 @@ async def on_message(message):
                                 str(best_30[i]['constant']) + '->**' + str(best_30[i]['rating'])[0:6] + '**',
                                                 inline=True)
 
-                    responseembed.set_footer(text='Best 30:' + str(b30)[0:6] + "\nRecent 10: " + str(r10)[0:6])
-                    await message.channel.send(embed= responseembed)
+                    response_embed.set_footer(text='Best 30:' + str(b30)[0:6] + "\nRecent 10: " + str(r10)[0:6])
+                    await message.channel.send(embed= response_embed)
                     return
             response = 'Please bind your ID first, use !bind <UID>'
             await message.channel.send(response)
@@ -278,8 +282,6 @@ async def on_message(message):
                     temp_image = Image.open('ArcAssets/images/icon_shadow.png')
                     temp_image = temp_image.resize((100, 100))
                     image.paste(temp_image, (user_x, user_y), mask=temp_image)
-
-                    print()
 
                     if personal_info['rating'] / 100 < 3.5:
                         rating_div = 0
