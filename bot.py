@@ -8,6 +8,7 @@ from Operations.b30 import b30
 from Operations.kou import kou
 from Operations.recent import recent
 from Operations.target import target
+from Operations.b30o import b30o
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -32,6 +33,7 @@ async def on_message(message):
             response = '**!bind <UID>** --- Binding discord ID with your Arcaea UID\n' \
                        '**!recent** -- Show your recent play\n' \
                        '**!b30** -- Show your best 30 plays in a picture\n' \
+                       '**!b30o** -- Show your best 30 plays before v3.0\n' \
                        '**!target** -- Randomly select a target chart which might improve your potential\n' \
                        '**!kou** -- Kou!'
             await message.channel.send(content=message.author.mention + '\n' + response)
@@ -79,6 +81,16 @@ async def on_message(message):
             for i in players:
                 if i[0] == str(message.author.id):
                     image = b30(i[1])
+                    image.save('output.jpg', quality=95, subsampling=0)
+                    await message.channel.send(content=message.author.mention, file=discord.File('output.jpg'))
+                    return
+            response = 'Please bind your ID first, use !bind <UID>'
+            await message.channel.send(response)
+
+        elif contentdata[0] == '!b30o':
+            for i in players:
+                if i[0] == str(message.author.id):
+                    image = b30o(i[1])
                     image.save('output.jpg', quality=95, subsampling=0)
                     await message.channel.send(content=message.author.mention, file=discord.File('output.jpg'))
                     return

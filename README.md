@@ -1,5 +1,5 @@
 # KouBot
-a discord chatbot for Arcaea stats
+A discord chatbot for Arcaea stats
 # Requirements
 * Python >= 3.8.3
 * numpy
@@ -14,6 +14,6 @@ a discord chatbot for Arcaea stats
 * !bind <UID> --- Binding discord ID with your Arcaea UID
 * !recent -- Show your recent play
 * !b30 -- Show your best 30 plays in a picture
-* !b30e -- Show your best 30 plays in discord embed
+* !b30o -- Show your best 30 plays before v3.0
 * !target -- Randomly select a target chart which might improve your potential
 * !kou -- Kou!
