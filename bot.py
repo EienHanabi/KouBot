@@ -14,7 +14,6 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
 
-players = np.loadtxt('list.txt', dtype=str, comments='&')
 
 @client.event
 async def on_ready():
@@ -22,13 +21,13 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    global players
 
     if message.author.id == client.user.id:
         return
 
     if len(message.content) > 0:
         contentdata = message.content.split()
+
         if contentdata[0] == '!help':
             response = '**!bind <UID>** --- Binding discord ID with your Arcaea UID\n' \
                        '**!recent** -- Show your recent play\n' \
@@ -43,23 +42,26 @@ async def on_message(message):
             await message.channel.send(content=response)
 
         elif contentdata[0] == '!bind' and len(contentdata) >= 2:
-            if(len(contentdata[1]) != 9) or (contentdata[1].isdigit() == False):
+            if(len(contentdata[1]) != 9) or (not contentdata[1].isdigit()):
                 response = 'Wrong format'
                 await message.channel.send(content=message.author.mention + '\n' + response)
                 return
-            else:
-                for i in players:
-                    if i[1] == contentdata[1] or i[0] == str(message.author.id):
-                        response = 'This ID is already linked to an account'
-                        await message.channel.send(content=message.author.mention + '\n' + response)
-                        return
-                players = np.append(players, [[message.author.id, contentdata[1]]], axis=0)
-                print([message.author.id, contentdata[1]])
-                np.savetxt('list.txt', players, fmt='%s %s', newline='\n')
-                response = 'Binding Complete!'
-                await message.channel.send(content=message.author.mention + '\n' + response)
+
+            players = np.loadtxt('list.txt', dtype=str, comments='&')
+            for i in players:
+                if i[1] == contentdata[1] or i[0] == str(message.author.id):
+                    response = 'This ID is already linked to an account'
+                    await message.channel.send(content=message.author.mention + '\n' + response)
+                    return
+
+            players = np.append(players, [[message.author.id, contentdata[1]]], axis=0)
+            print([message.author.id, contentdata[1]])
+            np.savetxt('list.txt', players, fmt='%s %s', newline='\n')
+            response = 'Binding Complete!'
+            await message.channel.send(content=message.author.mention + '\n' + response)
 
         elif contentdata[0] == '!target':
+            players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
                     response = target(i[1])
@@ -69,6 +71,7 @@ async def on_message(message):
             await message.channel.send(content=message.author.mention + '\n' + response)
 
         elif contentdata[0] == '!recent':
+            players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
                     response_embed = recent(i[1])
@@ -78,6 +81,7 @@ async def on_message(message):
             await message.channel.send(response)
 
         elif contentdata[0] == '!b30':
+            players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
                     image = b30(i[1])
@@ -88,6 +92,7 @@ async def on_message(message):
             await message.channel.send(response)
 
         elif contentdata[0] == '!b30o':
+            players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
                     image = b30o(i[1])
