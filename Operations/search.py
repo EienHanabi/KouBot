@@ -13,12 +13,11 @@ def checktime(timestamp):
     sec = int(time.time() - timestamp/1000)
     if(sec < 60):
         return str(sec) + 's'
-    elif(sec < 3600):
+    if(sec < 3600):
         return str(int(sec/60)) + 'm'
-    elif(sec < 86400):
+    if(sec < 86400):
         return str(int(sec/3600)) + 'h'
-    else:
-        return str(int(sec/86400)) + 'd'
+    return str(int(sec/86400)) + 'd'
 
 def search(usercode, song_name, song_difficulty='FTR'):
     api_ = SyncApi(user_code=usercode)

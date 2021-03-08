@@ -100,9 +100,9 @@ async def on_message(message):
                         response = 'No matches found'
                         await message.channel.send(content=message.author.mention + '\n' + response)
                         return
-                    else:
-                        await message.channel.send(content=message.author.mention, embed=response)
-                        return
+
+                    await message.channel.send(content=message.author.mention, embed=response)
+                    return
 
             response = 'Please bind your ID first, use !bind <UID>'
             await message.channel.send(content=message.author.mention + '\n' + response)
