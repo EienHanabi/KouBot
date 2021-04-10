@@ -13,5 +13,6 @@ def kou():
             'https://pbs.twimg.com/media/Ed_a7wTU0AEc7Cv?format=jpg&name=orig',
             'https://pbs.twimg.com/media/EKEBCGKUcAAF4iR?format=jpg&name=orig',
             'https://pbs.twimg.com/media/EI1CKGmUYAAVUCV?format=jpg&name=orig',
-            'https://pbs.twimg.com/media/EvKUgjpUYAI1ayk?format=jpg&name=orig']
+            'https://pbs.twimg.com/media/EvKUgjpUYAI1ayk?format=jpg&name=orig',
+            'https://pbs.twimg.com/media/EyIa_nlVgAQxDA6?format=jpg&name=orig']
     return random.choice(pics)
