@@ -66,9 +66,14 @@ async def on_message(message):
             players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
-                    response = target(i[1])
-                    await message.channel.send(content=message.author.mention + '\n' + response)
-                    return
+                    try:
+                        response = target(i[1])
+                    except:
+                        await message.channel.send(content=message.author.mention + '\n' + 'Connection Timed out')
+                        return
+                    else:
+                        await message.channel.send(content=message.author.mention + '\n' + response)
+                        return
             response = 'Please bind your ID first, use !bind <UID>'
             await message.channel.send(content=message.author.mention + '\n' + response)
 
@@ -76,9 +81,14 @@ async def on_message(message):
             players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
-                    response_embed = recent(i[1])
-                    await message.channel.send(content=message.author.mention, embed=response_embed)
-                    return
+                    try:
+                        response_embed = recent(i[1])
+                    except:
+                        await message.channel.send(content=message.author.mention + '\n' + 'Connection Timed out')
+                        return
+                    else:
+                        await message.channel.send(content=message.author.mention, embed=response_embed)
+                        return
             response = 'Please bind your ID first, use !bind <UID>'
             await message.channel.send(response)
 
@@ -92,9 +102,17 @@ async def on_message(message):
             for i in players:
                 if i[0] == str(message.author.id):
                     if(len(contentdata) < 3):
-                        response = search(i[1], contentdata[1])
+                        try:
+                            response = search(i[1], contentdata[1])
+                        except:
+                            await message.channel.send(content=message.author.mention + '\n' + 'Connection Timed out')
+                            return
                     else:
-                        response = search(i[1], contentdata[1], contentdata[2])
+                        try:
+                            response = search(i[1], contentdata[1], contentdata[2])
+                        except:
+                            await message.channel.send(content=message.author.mention + '\n' + 'Connection Timed out')
+                            return
 
                     if not response:
                         response = 'No matches found'
@@ -111,10 +129,15 @@ async def on_message(message):
             players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
-                    image = b30(i[1])
-                    image.save('output.jpg', quality=95, subsampling=0)
-                    await message.channel.send(content=message.author.mention, file=discord.File('output.jpg'))
-                    return
+                    try:
+                        image = b30(i[1])
+                    except:
+                        await message.channel.send(content=message.author.mention+ '\n' + 'Connection Timed out')
+                        return
+                    else:
+                        image.save('output.jpg', quality=95, subsampling=0)
+                        await message.channel.send(content=message.author.mention, file=discord.File('output.jpg'))
+                        return
             response = 'Please bind your ID first, use !bind <UID>'
             await message.channel.send(response)
 
@@ -122,10 +145,15 @@ async def on_message(message):
             players = np.loadtxt('list.txt', dtype=str, comments='&')
             for i in players:
                 if i[0] == str(message.author.id):
-                    image = b30o(i[1])
-                    image.save('output.jpg', quality=95, subsampling=0)
-                    await message.channel.send(content=message.author.mention, file=discord.File('output.jpg'))
-                    return
+                    try:
+                        image = b30o(i[1])
+                    except:
+                        await message.channel.send(content=message.author.mention + '\n' + 'Connection Timed out')
+                        return
+                    else:
+                        image.save('output.jpg', quality=95, subsampling=0)
+                        await message.channel.send(content=message.author.mention, file=discord.File('output.jpg'))
+                        return
             response = 'Please bind your ID first, use !bind <UID>'
             await message.channel.send(response)
 

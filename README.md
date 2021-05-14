@@ -18,5 +18,5 @@ A discord chatbot for Arcaea stats
 * !b30o -- Show your best 30 plays using algorithm before Arcaea 3.0.0
 * !target -- Randomly select a target chart which might improve your potential
 * !kou -- Kou!
-# Look
-![](https://ftp.bmp.ovh/imgs/2021/03/5812bfec82196572.jpg)
+# Disclaimer
+* I do not own any rights on pics on ArcAssets, all rights goes to lowiro.
