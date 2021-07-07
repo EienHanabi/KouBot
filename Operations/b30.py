@@ -1,10 +1,17 @@
-from Arcapi import SyncApi
+import requests
+import json
 from PIL import Image, ImageFilter, ImageDraw, ImageFont
 
 difficulty = ['PST', 'PRS', 'FTR', 'BYD']
 clear_type_short = ['F', 'NC', 'FR', 'PM', 'EC', 'HC']
-cover = 'http://119.23.30.103:8080/ArcAssets/cover/'
-ava = 'http://119.23.30.103:8080/ArcAssets/icon/'
+
+
+def query_songname(songid):
+    with open("ArcSongList.json", 'r', encoding='utf-8') as load_f:
+        dict = json.load(load_f)
+    for i in dict['songs']:
+        if i['id'] == songid:
+            return i['title_localized']['en']
 
 
 def margin_text(draw, x, y, text, font, shadowcolor):
@@ -23,8 +30,8 @@ def margin_text(draw, x, y, text, font, shadowcolor):
     draw.text((x, y), text, fill='#FFFFFF', font=font)
 
 
-def add_stat(im, x, y, i, song_info, best_30):
-    song_name_cut = song_info[best_30[i]['song_id']]['en']
+def add_stat(im, x, y, i, best_30):
+    song_name_cut = query_songname(best_30[i]['song_id'])
     if len(song_name_cut) > 10:
         song_name_cut = song_name_cut[0:10] + '..'
     text = '#' + str(i + 1) + ' ' + song_name_cut + '[' + str(
@@ -47,21 +54,22 @@ def add_stat(im, x, y, i, song_info, best_30):
 
 
 def b30(usercode):
-    api_ = SyncApi(user_code=usercode)
-    arraybuffer = api_.scores(start=8, end=12)
-    personal_info = arraybuffer[1]
-    song_info = arraybuffer[0]
-    best_info = []
-    for i in range(len(arraybuffer)):
-        if i > 1:
-            best_info.append(arraybuffer[i])
-    best_info.sort(key=lambda info: info['rating'], reverse=True)
-    best_30 = best_info[0:30]
-    b30 = 0
-    for i in best_30:
-        b30 += i['rating']
-    b30 = b30 / 30
-    r10 = arraybuffer[1]['rating'] * 0.01 * 4 - b30 * 3
+    # contact botarcapi for address and UA
+    headers = {"User-Agent": "InsertYourAgentHere"}
+    response_best30_json = requests.post("see BotArcApi wiki" + usercode,
+                                         headers=headers)
+
+    response_best30 = response_best30_json.json()
+    if response_best30['status'] != 0:
+        return response_best30['status'], response_best30['message']
+
+    # contact botarcapi for address
+    response_userinfo_json = requests.post("see BotArcApi wiki" + usercode + "&recent=1",
+                                           headers=headers)
+
+    response_userinfo = response_userinfo_json.json()
+    if response_userinfo['status'] != 0:
+        return response_userinfo['status'], response_userinfo['message']
 
     image = Image.open('background-darken.jpg')
 
@@ -69,7 +77,7 @@ def b30(usercode):
         image = image.filter(ImageFilter.GaussianBlur)
     for n in range(10):
         for m in range(3):
-            add_stat(image, 165 + 400 * m, 60 + 142 * n, n * 3 + m, song_info, best_30)
+            add_stat(image, 165 + 400 * m, 60 + 142 * n, n * 3 + m, response_best30['content']['best30_list'])
 
     user_x = 825
     user_y = 1500
@@ -78,17 +86,21 @@ def b30(usercode):
     temp_image = temp_image.resize((100, 100))
     image.paste(temp_image, (user_x, user_y), mask=temp_image)
 
-    if personal_info['rating'] / 100 < 3.5:
+    b30 = response_best30['content']['best30_avg']
+    r10 = response_best30['content']['recent10_avg']
+    rating = (b30 * 3 + r10) / 4
+
+    if rating < 3.5:
         rating_div = 0
-    elif personal_info['rating'] / 100 < 7:
+    elif rating < 7:
         rating_div = 1
-    elif personal_info['rating'] / 100 < 10:
+    elif rating < 10:
         rating_div = 2
-    elif personal_info['rating'] / 100 < 11:
+    elif rating < 11:
         rating_div = 3
-    elif personal_info['rating'] / 100 < 12:
+    elif rating < 12:
         rating_div = 4
-    elif personal_info['rating'] / 100 < 12.5:
+    elif rating < 12.5:
         rating_div = 5
     else:
         rating_div = 6
@@ -100,14 +112,14 @@ def b30(usercode):
     user_y += 28
 
     draw = ImageDraw.Draw(image)
-    text = str("%.2f" % (personal_info['rating'] / 100))
+    text = str("%.2f" % (rating))
     font = ImageFont.truetype("Exo-Medium.ttf", 33)
     shadowcolor = 'black'
     margin_text(draw, user_x, user_y, text, font, shadowcolor)
 
     user_x += 100
     user_y -= 13
-    text = personal_info['name']
+    text = response_userinfo['content']['name']
     font = ImageFont.truetype("Exo-Medium.ttf", 50)
     margin_text(draw, user_x, user_y, text, font, shadowcolor)
 
@@ -116,4 +128,4 @@ def b30(usercode):
     font = ImageFont.truetype("Exo-Medium.ttf", 25)
     margin_text(draw, user_x, user_y, text, font, shadowcolor)
 
-    return image
+    return 0, image

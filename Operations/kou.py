@@ -14,5 +14,9 @@ def kou():
             'https://pbs.twimg.com/media/EKEBCGKUcAAF4iR?format=jpg&name=orig',
             'https://pbs.twimg.com/media/EI1CKGmUYAAVUCV?format=jpg&name=orig',
             'https://pbs.twimg.com/media/EvKUgjpUYAI1ayk?format=jpg&name=orig',
-            'https://pbs.twimg.com/media/EyIa_nlVgAQxDA6?format=jpg&name=orig']
+            'https://pbs.twimg.com/media/EyIa_nlVgAQxDA6?format=jpg&name=orig',
+            'https://pbs.twimg.com/media/Ew900PHUYAYbC5T?format=jpg&name=orig',
+            'https://pbs.twimg.com/media/EyDKdu8UYAAnUuj?format=jpg&name=orig',
+            'https://pbs.twimg.com/media/EfIDDUoUcAYU5gZ?format=jpg&name=orig',
+            'https://pbs.twimg.com/media/E5VnW5_UcAIiRqG?format=jpg&name=orig']
     return random.choice(pics)
