@@ -4,8 +4,8 @@ A discord chatbot for Arcaea stats
 * Python >= 3.8.3
 * numpy
 * discord.py
-* <https://github.com/littlebutt/Arcapi>
 * PIL
+* <https://github.com/TheSnowfield/BotArcAPIs-Memories>
 # Deployment
 * Create .env file which contains your Discordbot token
 * Run bot.py
